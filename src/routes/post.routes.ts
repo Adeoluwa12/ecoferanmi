@@ -3,7 +3,9 @@ import {
   createPost,
   deletePost,
   getAllPosts,
+  getDraftPosts,
   getPostBySlug,
+  schedulePost,
   updatePost,
 } from '../controllers/post.controller';
 import checkAdminKey from '../middlewares/auth.middleware';
@@ -49,5 +51,10 @@ router.delete('/:id', checkAdminKey, async (req, res, next) => {
     next(err);
   }
 });
+
+router.get('/posts/drafts', getDraftPosts);
+router.post('/posts/:postId/schedule', schedulePost);
+
+
 
 export default router;

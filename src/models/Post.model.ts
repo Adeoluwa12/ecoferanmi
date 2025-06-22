@@ -10,7 +10,19 @@ const postSchema = new mongoose.Schema(
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
     tags: [{ type: String }],
     coverImage: { type: String },
-    isPublished: { type: Boolean, default: true }
+    isPublished: { type: Boolean, default: true },
+    isDraft: { type: Boolean, default: false },
+    scheduledFor: { type: Date, default: null },
+    shares: {
+      type: Number,
+      default: 0,
+    },
+    sharedBy: [
+  {
+    platform: { type: String }, // e.g., twitter, whatsapp
+    timestamp: { type: Date, default: Date.now }
+  }
+]
   },
   { timestamps: true }
 );
@@ -22,5 +34,9 @@ postSchema.pre('validate', function (next) {
   }
   next();
 });
+
+postSchema.index({ title: 'text', content: 'text', tags: 'text' }); // Enable full-text search
+
+
 
 export default mongoose.model('Post', postSchema);

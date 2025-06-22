@@ -78,3 +78,31 @@ export const deletePost = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error deleting post', error: err });
   }
 };
+
+
+  export const getDraftPosts = async (_req: Request, res: Response) => {
+    try {
+      const drafts = await Post.find({ isDraft: true }).sort({ createdAt: -1 });
+      res.json(drafts);
+    } catch (err) {
+      res.status(500).json({ message: 'Failed to fetch drafts', error: err });
+    }
+  };
+  
+
+  export const schedulePost = async (req: Request, res: Response) => {
+    try {
+      const { date } = req.body;
+  
+      const post = await Post.findByIdAndUpdate(
+        req.params.postId,
+        { scheduledFor: new Date(date), isDraft: true },
+        { new: true }
+      );
+  
+      res.json({ message: 'Post scheduled', post });
+    } catch (err) {
+      res.status(500).json({ message: 'Scheduling failed', error: err });
+    }
+  };
+  

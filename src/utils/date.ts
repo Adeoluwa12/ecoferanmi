@@ -1,0 +1,5 @@
+export const getTodayDate = (): string => {
+    const today = new Date();
+    return today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+  };
+  
