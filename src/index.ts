@@ -18,7 +18,7 @@ import mediaroutes from './routes/media.route'
 
 dotenv.config();
 
-connectDB();/
+connectDB();
 
 const app = express();
 app.use(cors());
