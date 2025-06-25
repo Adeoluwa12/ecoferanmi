@@ -12,15 +12,18 @@ import socialRoutes from './routes/social.route';
 import path from 'path';
 import { runPostScheduler } from './utils/cron.scheduler';
 import notificationRoutes from './routes/notification.route';
+import authRoutes from './routes/auth.route'
+import mediaroutes from './routes/media.route'
 
 
 dotenv.config();
 
-connectDB();
+connectDB();/
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
   res.send('EcoFeranmi API running');
@@ -28,6 +31,7 @@ app.get('/', (req, res) => {
 
 
 app.use('/api/posts', postRoutes);
+app.use('/api/auth', authRoutes)
 app.use('/api/categories', categoryRoutes);
 app.use('/api', commentRoutes);
 app.use('/api', newsletterRoutes);
@@ -35,6 +39,7 @@ app.use('/api', analyticsRoutes);
 app.use('/api', searchRoutes);
 app.use('/api', socialRoutes);
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use('/api', mediaroutes, express.static(path.join(__dirname, '../uploads')));
 app.use('/notifications', notificationRoutes);
 
 runPostScheduler();

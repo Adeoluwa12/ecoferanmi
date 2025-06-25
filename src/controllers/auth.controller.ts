@@ -19,10 +19,12 @@ export const register = async (req: Request, res: Response): Promise<any> => {
     const token = createToken(user);
 
     res.json({ user: { id: user._id, name: user.name, email: user.email }, token });
-  } catch (err) {
-    res.status(500).json({ message: 'Registration failed', error: err });
+  } catch (err: any) {
+    console.error('Registration error:', err.message || err);
+    res.status(500).json({ message: 'Registration failed', error: err.message || err });
   }
 };
+
 
 // Login
 export const login = async (req: Request, res: Response): Promise<any> => {

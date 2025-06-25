@@ -1,7 +1,15 @@
-import mongoose from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-const authSchema = new mongoose.Schema(
+interface IAuth extends Document {
+  name: string;
+  email: string;
+  password: string;
+  role: 'admin' | 'author' | 'subscriber';
+  comparePassword(candidate: string): Promise<boolean>;
+}
+
+const authSchema = new mongoose.Schema<IAuth>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -13,14 +21,19 @@ const authSchema = new mongoose.Schema(
 
 // Hash password before saving
 authSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
-});
+  const user = this as IAuth;
+  if (!user.isModified('password')) return next();
 
-// Compare password method
-authSchema.methods.comparePassword = function (candidate: string) {
-  return bcrypt.compare(candidate, this.password);
+  try {
+    user.password = await bcrypt.hash(user.password, 10);
+    next();
+  } catch (err) {
+    // Fix: ensure err is of type CallbackError | undefined
+    next(err as mongoose.CallbackError);
+  }
+});
+authSchema.methods.comparePassword = async function (candidate: string): Promise<boolean> {
+  return await bcrypt.compare(candidate, this.password);
 };
 
-export default mongoose.model('Auth', authSchema);
+export default mongoose.model<IAuth>('Auth', authSchema);
