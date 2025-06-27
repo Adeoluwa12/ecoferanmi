@@ -27,8 +27,9 @@ export const subscribe = async (req: Request, res: Response): Promise<any> => {
     );
 
     res.status(201).json({ message: 'Subscribed and email sent!', data: newSub });
-  } catch (err) {
-    res.status(500).json({ message: 'Subscription failed', error: err });
+  } catch (err: any) {
+    console.error("Subscription Error:", err); // <== Add this
+    res.status(500).json({ message: 'Subscription failed', error: err.message || err });
   }
 };
 
