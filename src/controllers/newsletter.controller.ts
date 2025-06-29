@@ -18,7 +18,7 @@ export const subscribe = async (req: Request, res: Response): Promise<any> => {
 
     await sendEmail(
       email,
-      'Welcome to Our Newsletter!',
+      'Welcome to My Newsletter!',
       `
         <h2>Thank you for subscribing!</h2>
         <p>You’ll now receive the latest updates straight to your inbox.</p>
